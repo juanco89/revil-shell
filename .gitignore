@@ -1,0 +1,14 @@
+
+## Ejecutables
+bin/
+
+## Librerías
+lib/
+
+## Dolphin
+.directory
+*.directory
+
+## KDevelop
+*.kdev4
+.kdev4/
