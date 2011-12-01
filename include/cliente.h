@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "iosocket.h"
 
@@ -19,5 +20,7 @@ char* ip;
 int crear_socket_cliente(int, char*, struct sockaddr *);
 void escribir_respuesta(char*);
 int conectar(int sck,struct sockaddr *addin);
+void cerrar_cliente(void);
+void sig_handler(int);
 
 #endif

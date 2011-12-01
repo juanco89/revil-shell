@@ -5,7 +5,8 @@
  * buffer con los datos
  * longitud a enviar
  */
-int escribir_socket(int sckdes, char* msg, int leng){
+int escribir_socket(int sckdes, char* msg, int leng)
+{
   int result = send(sckdes, msg, leng,0);
   return result;
 }
@@ -15,7 +16,8 @@ int escribir_socket(int sckdes, char* msg, int leng){
  * buffer
  * longitud máxima recivida
  */
-int leer_socket(int sckdes, char* msg, int leng){
+int leer_socket(int sckdes, char* msg, int leng)
+{
    int msg_len= recv(sckdes,msg,leng,0);
    return msg_len;
 }
