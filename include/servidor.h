@@ -19,7 +19,6 @@ int cliente_conectado;
 /*Declaracion de prototipos de funciones*/
 int crear_socket_servidor(int puerto);
 int escuchar_clientes_nuevos(void);
-char* obtener_comando(char* buff);
 void sig_handler(int signal);
 
 #endif
