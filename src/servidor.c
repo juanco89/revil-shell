@@ -1,6 +1,5 @@
 #include "../include/servidor.h"
 
-
 int main(int argc, char *argv[]){
   /* Registrando rutina manejadora de señales */
   if(signal(SIGINT, sig_handler)==SIG_ERR)
@@ -18,42 +17,14 @@ int main(int argc, char *argv[]){
   if (socket_des == -1 )
   {
     perror("Error abriendo el socket");
-    return 0;
+    return -1;
   }
-  
+  printf(">>> El servidor revil_shell está escuchando.\n");
   int cliente_descriptor;
-  char comando[MAX_LINE];
-  int tam_comm;
-  int datos_enviados;
-  cliente_conectado = 0;
   do {
     cliente_descriptor = escuchar_clientes_nuevos();
-    while(cliente_conectado)
-    {
-      // Separar lectura y escritura en hilos diferentes
-      
-      printf("~~> ");  // Prompt
-      //comando = obtener_comando(comando);
-      fgets(comando, MAX_LINE, stdin);
-      tam_comm = strlen(comando);
-      
-      //Pruebas
-      printf("La longitud del commando es: %d\n",tam_comm);
-      printf("Comando ingresado: %s",comando);
-      
-      /* Enviar el comando al cliente */
-      datos_enviados = escribir_socket(cliente_descriptor, comando, tam_comm + 1);
-      /*if (datos_enviados == -1){
-	printf("Se cerró la conexión con el cliente\n");
-	break;
-      }*/
-      
-      //Esperar respuesta del cliente
-      
-      //free(comando);
-    }
+    iniciar_shell(cliente_descriptor);
   }while(1);
-  close(socket_des);
   return 0;
 }
 
@@ -75,8 +46,7 @@ int crear_socket_servidor(int puerto)
   bzero(&(s_addin.sin_zero),8);
   
   bind(sck,(struct sockaddr *)&s_addin, sizeof(struct sockaddr));
-  listen(sck,1);  
-  printf(">>> El servidor revil_shell está escuchando.\n");
+  listen(sck,1);
   return sck;
 }
 
@@ -92,7 +62,6 @@ int escuchar_clientes_nuevos(void)
     printf("No se pudo establecer la conexión\n");
     return -1;
   }
-  cliente_conectado = 1;
   printf(">>> Establecida la conexión con: %s\n", inet_ntoa(host_cliente.sin_addr));
   return cliente_des;
 }
@@ -109,7 +78,7 @@ void sig_handler(int signal)
       break;
     case SIGPIPE:
       printf("[x] Se ha perdido la conexión con el cliente\n\n");
-      cliente_conectado = 0;
+      terminar_shell();
       break;
     default: break;
   }

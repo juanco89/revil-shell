@@ -24,8 +24,9 @@ DBG=gdb
 ###Compilador
 CC = gcc
 CFLAGS = -I$(INCLUDEDIR)
+LFLAGS = -L$(LIBDIR)
+CLIBS = -lpthread
 DEBUG = -g$(DBG)
-#-L$(LIBDIR)
 
 
 ###Biblioteca de usuario y archivos que forman parte de la biblioteca
@@ -35,7 +36,7 @@ OBJETOS_BIBLIOTECA = iosocket.o
 
 ###Programa ejecutable
 SERVIDOR = $(BINDIR)/revil_server
-OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c}
+OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c,shell.c}
 
 CLIENTE = $(BINDIR)/revil_client
 OBJETOS_CLIENTE = $(SRCDIR)/{iosocket.c,cliente.c}
@@ -52,7 +53,7 @@ cliente: $(CLIENTE)
 
 $(SERVIDOR):
 	echo " [*]Generando el servidor"
-	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) -o $(SERVIDOR)
+	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(CLIBS) -o $(SERVIDOR)
 	echo " --> Listo!"
 
 $(CLIENTE):

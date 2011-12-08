@@ -1,11 +1,24 @@
 #include "../include/shell.h"
 
-void iniciar_shell(int descriptor_cliente)
-{
-  while(descriptor_cliente)
+void iniciar_shell(int cliente)
+{  
+  descriptor_cliente = cliente;
+  cliente_conectado = 1;
+  
+  pthread_t id_hilo;
+  if(pthread_create(&id_hilo, NULL, escribir_respuesta, NULL) != 0){
+    printf("Algo ha salido mal creando el hilo de escucha\n");
+  }
+  
+  int tam_comm;
+  char comando[MAX_LINE];
+  int datos_enviados;
+  while(cliente_conectado)
   {
     printf(PROMPT);
-    
+    fgets(comando, MAX_LINE, stdin);
+    tam_comm = strlen(comando);
+    datos_enviados = escribir_socket(descriptor_cliente, comando, tam_comm + 1);
   }
 }
 
@@ -27,4 +40,20 @@ char * obtener_comando(char *buff)
   ++i;
   buff[i] = '\0';
   return (buff);
+}
+
+void * escribir_respuesta(void* args)
+{
+  char respuesta[MAX_LINE];
+  while(cliente_conectado)
+  {
+    leer_socket(descriptor_cliente, respuesta, MAX_LINE);
+    printf("%s",respuesta);
+  }
+  pthread_exit((void *) 0);
+}
+
+void terminar_shell(void)
+{
+  cliente_conectado = 0;
 }

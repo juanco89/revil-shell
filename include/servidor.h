@@ -2,19 +2,15 @@
 #define __SERVIDOR_H__
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <strings.h>
 #include <arpa/inet.h>
-#include <string.h>
 #include <signal.h>
 
-#include "iosocket.h"
+#include "shell.h"
 
 /*Declaracion de variables globales*/
 int socket_des;
 int puerto;
-int cliente_conectado;
 
 /*Declaracion de prototipos de funciones*/
 int crear_socket_servidor(int puerto);
