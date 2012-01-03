@@ -39,7 +39,7 @@ SERVIDOR = $(BINDIR)/revil_server
 OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c,shell.c}
 
 CLIENTE = $(BINDIR)/revil_client
-OBJETOS_CLIENTE = $(SRCDIR)/{iosocket.c,cliente.c}
+OBJETOS_CLIENTE = $(SRCDIR)/{iosocket.c,cliente.c,cmd_exec.c}
 
 ALL = $(SERVIDOR) $(CLIENTE)
 
@@ -58,7 +58,7 @@ $(SERVIDOR):
 
 $(CLIENTE):
 	echo " [*]Generando el cliente"
-	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) -o $(CLIENTE)
+	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) $(DEBUG) -o $(CLIENTE)
 	echo " --> Listo!"
 
 ## Regla no usada

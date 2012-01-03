@@ -9,6 +9,7 @@
 #include <signal.h>
 
 #include "iosocket.h"
+#include "cmd_exec.h"
 
 /*Declaracion de variables globales*/
 int sckdes;
