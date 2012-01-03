@@ -14,7 +14,7 @@ int escribir_socket(int sckdes, char* msg, int leng)
 /**
  * descriptor de socket
  * buffer
- * longitud máxima recivida
+ * longitud máxima posible
  */
 int leer_socket(int sckdes, char* msg, int leng)
 {
