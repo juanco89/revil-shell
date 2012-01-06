@@ -17,8 +17,9 @@ int main (int argc, char *argv[]){
   {
     printf(">>> Conexion establecida con el servidor\n");
     char comando[MAX_LINE];
-    while(leer_socket(sckdes,comando,MAX_LINE) > 1)
+    while(leer_socket(sckdes,comando,MAX_LINE) > 0)
     {
+      if(*comando == '\0') continue;
       printf(">> %s\n",comando);
       exec_cmd(comando);
     }
