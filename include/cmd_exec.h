@@ -9,9 +9,11 @@
 #include "iosocket.h"
 
 #define DELIM " "
+#define MAX_TOKENS 100
 
-int cantidad_tokens(char* cmd);
-char** tokenizador(char* cmd, int n_tokens);
+char *tokens[MAX_TOKENS];
+
+void tokenizador(char* cmd);
 void exec_cmd(char * cmd);
 void esperar_hijos(void);
 
