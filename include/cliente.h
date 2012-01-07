@@ -25,5 +25,6 @@ void escribir_respuesta(char*);
 int conectar(int sck,struct sockaddr *addin);
 void cerrar_cliente(void);
 void sig_handler(int);
+void usage(void);
 
 #endif

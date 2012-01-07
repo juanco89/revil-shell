@@ -16,5 +16,6 @@ int puerto;
 int crear_socket_servidor(int puerto);
 int escuchar_clientes_nuevos(void);
 void sig_handler(int signal);
+void usage(void);
 
 #endif

@@ -86,3 +86,10 @@ void sig_handler(int signal)
   }
   return;
 }
+
+void usage(void)
+{
+  printf("Uso:\nrevil_client [ip] [puerto]\n");
+  printf("[ip]: Es la ip del servidor al cual se conectará.\n");
+  printf("[puerto]: Puerto de escucha del servidor.\n");
+}

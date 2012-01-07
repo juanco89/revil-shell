@@ -92,3 +92,9 @@ void sig_handler(int signal)
   }
   return;
 }
+
+void usage(void)
+{
+  printf("uso:\nrevil_server [puerto]\n");
+  printf("[puerto]: Es el puerto por el que el servidor escuchará.\n");
+}
