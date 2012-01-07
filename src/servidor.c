@@ -2,11 +2,19 @@
 
 int main(int argc, char *argv[]){
   /* Registrando rutina manejadora de señales */
-  if(signal(SIGINT, sig_handler)==SIG_ERR)
+
+  struct sigaction sa_sigint;
+  struct sigaction sa_sigpipe;
+
+  sa_sigint.sa_handler = sig_handler;
+  sa_sigint.sa_flags = SA_RESTART;
+  if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para Ctrl-C\n");
   }
-  if(signal(SIGPIPE, sig_handler)==SIG_ERR)
+  sa_sigpipe.sa_handler = sig_handler;
+  sa_sigpipe.sa_flags = SA_RESTART;
+  if(sigaction(SIGPIPE, &sa_sigpipe, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para SIGPIPE\n");
   }
