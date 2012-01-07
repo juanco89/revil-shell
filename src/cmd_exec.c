@@ -21,7 +21,6 @@ void exec_cmd(char* cmd)
   tokenizador(cmd);
 
   pid_t pid_cmd;
-  int ex_estado=0;
   pid_cmd = fork();
   switch(pid_cmd)
   {
@@ -34,13 +33,7 @@ void exec_cmd(char* cmd)
       exit(-1);
       break;
     default:
-      wait(&ex_estado);
-      printf("Finalizado el proceso hijo\n");
+      wait(NULL);
       break;
   }
-}
-
-void esperar_hijos(void)
-{
-  
 }

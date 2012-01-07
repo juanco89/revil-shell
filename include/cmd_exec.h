@@ -15,6 +15,5 @@ char *tokens[MAX_TOKENS];
 
 void tokenizador(char* cmd);
 void exec_cmd(char * cmd);
-void esperar_hijos(void);
 
 #endif
