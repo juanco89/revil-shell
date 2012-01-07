@@ -3,9 +3,20 @@
 
 int main (int argc, char *argv[]){
   
-  if(signal(SIGINT, sig_handler)==SIG_ERR)
+  struct sigaction sa_sigint;
+  struct sigaction sa_sigchld;
+  
+  sa_sigint.sa_handler = sig_handler;
+  sa_sigint.sa_flags = SA_RESTART;
+  if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para Ctrl-C\n");
+  }
+  sa_sigchld.sa_handler = SIG_IGN;
+  sa_sigchld.sa_flags = SA_NOCLDSTOP || SA_NOCLDWAIT;
+  if(sigaction(SIGCHLD, &sa_sigchld, NULL) == -1)
+  {
+    printf("No se pudo registrar el manejador para SIGCHLD\n");
   }
   
   puerto = 6666;

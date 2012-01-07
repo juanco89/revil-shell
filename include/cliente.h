@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <wait.h>
 
 #include "iosocket.h"
 #include "cmd_exec.h"
