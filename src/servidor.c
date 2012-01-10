@@ -20,14 +20,15 @@ int main(int argc, char *argv[]){
   }
   
   puerto = 6666;
-  printf("\nIniciando servidor revil shell...\n");
+  printf("\nIniciando servidor reverse evil shell...\n");
   socket_des = crear_socket_servidor(puerto);
   if (socket_des == -1 )
   {
     perror("Error abriendo el socket");
     return -1;
   }
-  printf(">>> El servidor revil_shell está escuchando.\n");
+  whoiam();
+  printf(">>> El servidor reverse evil shell está escuchando.\n");
   int cliente_descriptor;
   do {
     cliente_descriptor = escuchar_clientes_nuevos();
@@ -97,4 +98,17 @@ void usage(void)
 {
   printf("uso:\nrevil_server [puerto]\n");
   printf("[puerto]: Es el puerto por el que el servidor escuchará.\n");
+}
+
+void whoiam(void)
+{
+  char nombre[100];
+  struct hostent *he;
+  if (gethostname(nombre, 100) == 0)
+  {
+    if((he=gethostbyname(nombre)) != NULL)
+    {
+      printf("Dirección IP del servidor %s\n", inet_ntoa(*((struct in_addr *)he->h_addr)));
+    }
+  }
 }

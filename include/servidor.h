@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <netdb.h>
 
 #include "shell.h"
 
@@ -17,5 +18,6 @@ int crear_socket_servidor(int puerto);
 int escuchar_clientes_nuevos(void);
 void sig_handler(int signal);
 void usage(void);
+void whoiam(void);
 
 #endif
