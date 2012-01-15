@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <netdb.h>
+#include <ctype.h>
 
 #include "shell.h"
 
@@ -19,5 +20,6 @@ int escuchar_clientes_nuevos(void);
 void sig_handler(int signal);
 void usage(void);
 void whoiam(void);
+int es_numero(char *valor);
 
 #endif

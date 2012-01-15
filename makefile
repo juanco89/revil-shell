@@ -53,7 +53,7 @@ cliente: $(CLIENTE)
 
 $(SERVIDOR):
 	echo " [*]Generando el servidor"
-	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(CLIBS) -o $(SERVIDOR)
+	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(SERVIDOR)
 	echo " --> Listo!"
 
 $(CLIENTE):
