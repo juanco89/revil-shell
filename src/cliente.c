@@ -1,6 +1,5 @@
 #include "../include/cliente.h"
 
-
 int main (int argc, char *argv[]){
   
   struct sigaction sa_sigint;
@@ -21,7 +20,7 @@ int main (int argc, char *argv[]){
     exit(-1);
   }
   
-  if(argc != 3)
+  if(argc > 3 || argc == 1)
   {
     usage();
     exit(-1);
@@ -31,14 +30,19 @@ int main (int argc, char *argv[]){
     printf("[*] Mal argumento: Ingrese la dirección ip en formato de números y puntos.\n");
     exit(-1);
   }
-
-  if(!es_numero(argv[2]))
-  {
-    printf("[*] Mal argumento: El puerto debe ser numérico.\n");
-    exit(-1);
-  }
   ip = argv[1];
-  puerto = atoi(argv[2]);
+  if(argc == 3)
+  {
+    if(!(puerto=es_numero(argv[2])))
+    {
+      printf("[*] Mal argumento: El puerto debe ser numérico.\n");
+      exit(-1);
+    }
+  }
+  else
+  {
+    puerto = 6666;
+  }
 
   struct sockaddr_in addin;
   printf("Conectando al servidor...\n");
@@ -121,7 +125,7 @@ int es_numero(char *valor)
     if(!isdigit(valor[i]))
       return 0;
   }
-  return 1;
+  return atoi(valor);
 }
 
 int verificar_ip(char *ip)
@@ -145,5 +149,6 @@ int verificar_ip(char *ip)
     }
     return 0;
   }
+  if(puntos < 3 || nums == 0)return 0;
   return 1;
 }
