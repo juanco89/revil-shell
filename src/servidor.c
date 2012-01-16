@@ -21,17 +21,27 @@ int main(int argc, char *argv[]){
   }
   
   /* Validación de parámetros */
-  if(argc != 2){
+  if(argc > 2){
     usage();
     exit(-1);
   }
-  if (!es_numero(argv[1]))
-  {
-    printf("[*] Mal argumento: El puerto debe ser numérico.\n");
-    exit(-1);
+  if(argc == 2){
+    if(!strcmp(argv[1], "-h"))
+    {
+      usage();
+      exit(0);
+    }
+    if (!(puerto=es_numero(argv[1])))
+    {
+      printf("[*] Mal argumento: El puerto debe ser un numero positivo.\n");
+      exit(-1);
+    }
   }
-  puerto = atoi(argv[1]);
-  puerto = 6666; // << -- Test
+  else
+  {
+    // Puerto por defecto
+    puerto = 6666;
+  }
   
   printf("\nIniciando servidor reverse evil shell...\n");
   socket_des = crear_socket_servidor(puerto);
@@ -134,5 +144,5 @@ int es_numero(char *valor)
     if(!isdigit(valor[i]))
       return 0;
   }
-  return 1;
+  return atoi(valor);
 }
