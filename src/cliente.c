@@ -11,16 +11,35 @@ int main (int argc, char *argv[]){
   if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para Ctrl-C\n");
+    exit(-1);
   }
   sa_sigchld.sa_handler = SIG_IGN;
   sa_sigchld.sa_flags = SA_NOCLDSTOP || SA_NOCLDWAIT;
   if(sigaction(SIGCHLD, &sa_sigchld, NULL) == -1)
   {
     printf("No se pudo registrar el manejador para SIGCHLD\n");
+    exit(-1);
   }
   
-  puerto = 6666;
-  ip = "192.168.1.66";
+  if(argc != 3)
+  {
+    usage();
+    exit(-1);
+  }
+  if(!verificar_ip(argv[1]))
+  {
+    printf("[*] Mal argumento: Ingrese la dirección ip en formato de números y puntos.\n");
+    exit(-1);
+  }
+
+  if(!es_numero(argv[2]))
+  {
+    printf("[*] Mal argumento: El puerto debe ser numérico.\n");
+    exit(-1);
+  }
+  ip = argv[1];
+  puerto = atoi(argv[2]);
+
   struct sockaddr_in addin;
   printf("Conectando al servidor...\n");
   sckdes=crear_socket_cliente(puerto, ip, (struct sockaddr *)&addin);
@@ -92,4 +111,39 @@ void usage(void)
   printf("Uso:\nrevil_client [ip] [puerto]\n");
   printf("[ip]: Es la ip del servidor al cual se conectará.\n");
   printf("[puerto]: Puerto de escucha del servidor.\n");
+}
+
+int es_numero(char *valor)
+{
+  int i;
+  for(i = 0; valor[i] != '\0'; i++)
+  {
+    if(!isdigit(valor[i]))
+      return 0;
+  }
+  return 1;
+}
+
+int verificar_ip(char *ip)
+{
+  int i, nums = 0, puntos = 0;
+  for(i = 0; ip[i] != '\0'; i++)
+  {
+    if(isdigit(ip[i]))
+    {
+      nums++;
+      if(nums > 3) return 0;
+      continue;
+    }
+    if(ip[i] == '.')
+    {
+      if(nums == 0) return 0;
+      puntos++;
+      if(puntos > 3) return 0;
+      nums = 0;
+      continue;
+    }
+    return 0;
+  }
+  return 1;
 }

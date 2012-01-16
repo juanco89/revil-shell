@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <wait.h>
+#include <ctype.h>
 
 #include "iosocket.h"
 #include "cmd_exec.h"
@@ -26,5 +27,7 @@ int conectar(int sck,struct sockaddr *addin);
 void cerrar_cliente(void);
 void sig_handler(int);
 void usage(void);
+int es_numero(char *valor);
+int verificar_ip(char *ip);
 
 #endif
