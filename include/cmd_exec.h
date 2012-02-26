@@ -16,7 +16,7 @@ char *tokens[MAX_TOKENS];
 extern int sckdes;
 
 void tokenizador(char* cmd);
-void exec_cmd(char * cmd);
-void * enviar_respuesta(void * param);
-
+void exec_cmd(char* cmd);
+void * enviar_respuesta(void* param);
+int es_background(char* cmd);
 #endif
