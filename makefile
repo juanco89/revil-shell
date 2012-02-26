@@ -36,13 +36,15 @@ OBJETOS_BIBLIOTECA = iosocket.o
 
 ###Programa ejecutable
 SERVIDOR = $(BINDIR)/revil_server
-OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c,shell.c}
+OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c}
 
 CLIENTE = $(BINDIR)/revil_client
 OBJETOS_CLIENTE = $(SRCDIR)/{iosocket.c,cliente.c,cmd_exec.c}
 
-ALL = $(SERVIDOR) $(CLIENTE)
+SHELL = $(BINDIR)/revil_shell
+OBJETOS_SHELL = $(SRCDIR)/{shell.c}
 
+ALL = $(SERVIDOR) $(CLIENTE)
 
 ###Tuplas
 all : $(ALL)
@@ -51,14 +53,21 @@ servidor: $(SERVIDOR)
 
 cliente: $(CLIENTE)
 
-$(SERVIDOR):
+shell: $(SHELL)
+
+$(SERVIDOR): $(SHELL)
 	echo " [*]Generando el servidor"
-	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(SERVIDOR)
+	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(DEBUG) -o $(SERVIDOR)
 	echo " --> Listo!"
 
 $(CLIENTE):
 	echo " [*]Generando el cliente"
 	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(CLIENTE)
+	echo " --> Listo!"
+
+$(SHELL):
+	echo " [*]Generando el shell"
+	$(CC) $(OBJETOS_SHELL) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(SHELL)
 	echo " --> Listo!"
 
 ## Regla no usada
@@ -77,17 +86,3 @@ clean_all:
 	echo " [*]Eliminando archivos objeto, bibliotecas y ejecutables..."
 	rm -rf *.o *.a $(BINDIR)/*
 	echo " --> Hecho"
-
-###########################################################
-#SRC = $(shell ls *.c)
-#OBJECTS = $(SRC:.c=.o)
-
-# Regla que genera el archivo ejecutable
-#ejecutable: $(OBJECTS)
-#	echo "generando el archivo ejecutable..."
-#	gcc $(LFLAGS) $^ -o $@
-
-# Reglas para generar los archivos objeto del programa
-#%.o : %.c
-#	echo "generando los archivos objeto..."
-#	$(CC) $(CFLAGS) $< -o $@
