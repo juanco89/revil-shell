@@ -50,8 +50,11 @@ void * escribir_respuesta(void* args)
   char respuesta[MAX_LINE];
   while(cliente_conectado)
   {
-    leer_socket(descriptor_cliente, respuesta, MAX_LINE);
-    printf("%s",respuesta);
+    if(leer_socket(descriptor_cliente, respuesta, MAX_LINE) == 0){
+      terminar_shell();
+    }else {
+      printf("%s",respuesta);
+    }
   }
   pthread_exit((void *) 0);
 }

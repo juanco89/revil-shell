@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "iosocket.h"
 
@@ -12,8 +13,10 @@
 #define MAX_TOKENS 100
 
 char *tokens[MAX_TOKENS];
+extern int sckdes;
 
 void tokenizador(char* cmd);
 void exec_cmd(char * cmd);
+void * enviar_respuesta(void * param);
 
 #endif

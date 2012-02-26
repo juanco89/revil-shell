@@ -58,7 +58,7 @@ $(SERVIDOR):
 
 $(CLIENTE):
 	echo " [*]Generando el cliente"
-	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) $(DEBUG) -o $(CLIENTE)
+	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(CLIENTE)
 	echo " --> Listo!"
 
 ## Regla no usada
