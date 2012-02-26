@@ -33,16 +33,15 @@ DEBUG = -g$(DBG)
 BIBLIOTECA= $(LIBDIR)/librevil.a
 OBJETOS_BIBLIOTECA = iosocket.o
 
-
 ###Programa ejecutable
 SERVIDOR = $(BINDIR)/revil_server
-OBJETOS_SERVIDOR = $(SRCDIR)/{iosocket.c,servidor.c}
+OBJETOS_SERVIDOR = $(SRCDIR)/servidor.c
 
 CLIENTE = $(BINDIR)/revil_client
 OBJETOS_CLIENTE = $(SRCDIR)/{iosocket.c,cliente.c,cmd_exec.c}
 
-SHELL = $(BINDIR)/revil_shell
-OBJETOS_SHELL = $(SRCDIR)/{shell.c}
+R_SHELL = $(BINDIR)/revil_shell
+OBJETOS_SHELL = $(SRCDIR)/{shell.c,iosocket.c}
 
 ALL = $(SERVIDOR) $(CLIENTE)
 
@@ -53,9 +52,9 @@ servidor: $(SERVIDOR)
 
 cliente: $(CLIENTE)
 
-shell: $(SHELL)
+shell: $(R_SHELL)
 
-$(SERVIDOR): $(SHELL)
+$(SERVIDOR): $(R_SHELL)
 	echo " [*]Generando el servidor"
 	$(CC) $(OBJETOS_SERVIDOR) $(CFLAGS) $(DEBUG) -o $(SERVIDOR)
 	echo " --> Listo!"
@@ -65,9 +64,9 @@ $(CLIENTE):
 	$(CC) $(OBJETOS_CLIENTE) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(CLIENTE)
 	echo " --> Listo!"
 
-$(SHELL):
+$(R_SHELL):
 	echo " [*]Generando el shell"
-	$(CC) $(OBJETOS_SHELL) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(SHELL)
+	$(CC) $(OBJETOS_SHELL) $(CFLAGS) $(CLIBS) $(DEBUG) -o $(R_SHELL)
 	echo " --> Listo!"
 
 ## Regla no usada

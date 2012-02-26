@@ -3,23 +3,23 @@
 int main(int argc, char *argv[]){
   /* Registrando rutina manejadora de señales */
   struct sigaction sa_sigint;
-  struct sigaction sa_sigpipe;
+  struct sigaction sa_sigchld;
 
   sa_sigint.sa_handler = sig_handler;
   sa_sigint.sa_flags = SA_RESTART;
   if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
   {
-    printf("No se pudo registrar el manejador para Ctrl-C\n");
+    perror("SIGINT");
     exit(-1);
   }
-  sa_sigpipe.sa_handler = sig_handler;
-  sa_sigpipe.sa_flags = SA_RESTART;
-  if(sigaction(SIGPIPE, &sa_sigpipe, NULL) == -1)
+  sa_sigchld.sa_handler = SIG_IGN;
+  sa_sigchld.sa_flags = SA_NOCLDSTOP || SA_NOCLDWAIT;
+  if(sigaction(SIGCHLD, &sa_sigchld, NULL) == -1)
   {
-    printf("No se pudo registrar el manejador para SIGPIPE\n");
+    perror("SIGCHLD");
     exit(-1);
   }
-  
+
   /* Validación de parámetros */
   if(argc > 2){
     usage();
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     }
     if (!(puerto=es_numero(argv[1])))
     {
-      printf("[*] Mal argumento: El puerto debe ser un numero positivo.\n");
+      perror("[*] Mal argumento: El puerto debe ser un numero positivo.");
       exit(-1);
     }
   }
@@ -51,11 +51,28 @@ int main(int argc, char *argv[]){
     return -1;
   }
   whoiam();
-  printf(">>> El servidor reverse evil shell está escuchando.\n");
+  printf(">>> El servidor reverse evil shell está escuchando.\n\n");
   int cliente_descriptor;
   do {
     cliente_descriptor = escuchar_clientes_nuevos();
-    iniciar_shell(cliente_descriptor);
+
+    switch(fork())
+    {
+      case -1:
+	perror("Fork");
+	break;
+      case 0:
+      {
+	// Se convierte el cliente_descriptor es char * para pasarlo como parámetro al shell
+	char str_sokdes[10];
+	snprintf(str_sokdes, 10, "%d", cliente_descriptor);
+	// Se ejecuta el programa revil_shell ubicado en la misma ruta del servidor
+	execl("./revil_shell", "./revil_shell", str_sokdes, (char*)NULL);
+	perror("EXEC");
+	exit(-1);
+      }
+	break;
+    }
   }while(1);
   return 0;
 }
@@ -76,9 +93,9 @@ int crear_socket_servidor(int puerto)
   s_addin.sin_port = htons(puerto);
   s_addin.sin_addr.s_addr = htonl(INADDR_ANY);
   bzero(&(s_addin.sin_zero),8);
-  
+
   bind(sck,(struct sockaddr *)&s_addin, sizeof(struct sockaddr));
-  listen(sck,1);
+  listen(sck, 10);
   return sck;
 }
 
@@ -86,12 +103,11 @@ int escuchar_clientes_nuevos(void)
 {
   struct sockaddr_in host_cliente;
   int longitud = sizeof(struct sockaddr);
-  printf("Esperando conexión...\n");
   int cliente_des = accept(socket_des, (struct sockaddr *)(&host_cliente), &longitud);
   printf("Conexión entrante...\n");
   if(cliente_des==-1)
   {
-    printf("No se pudo establecer la conexión\n");
+    perror("No se pudo establecer la conexión.");
     return -1;
   }
   printf(">>> Establecida la conexión con: %s\n", inet_ntoa(host_cliente.sin_addr));
@@ -107,10 +123,6 @@ void sig_handler(int signal)
       printf(" Apagando el servidor...\n");
       close(socket_des);
       exit(0);
-      break;
-    case SIGPIPE:
-      printf("[x] Se ha perdido la conexión con el cliente\n\n");
-      terminar_shell();
       break;
     default: break;
   }

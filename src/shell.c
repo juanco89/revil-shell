@@ -1,14 +1,46 @@
 #include "../include/shell.h"
 
-void iniciar_shell(int cliente)
+int main(int argc, char *argv[])
 {
-  descriptor_cliente = cliente;
-  cliente_conectado = 1;
+  struct sigaction sa_sigint;
+  struct sigaction sa_sigpipe;
+  struct sigaction sa_sigchld;
 
+  sa_sigint.sa_handler = sig_handler;
+  sa_sigint.sa_flags = SA_RESTART;
+  if(sigaction(SIGINT, &sa_sigint, NULL) == -1)
+  {
+    perror("SIGINIT");
+    exit(-1);
+  }
+  sa_sigpipe.sa_handler = sig_handler;
+  sa_sigpipe.sa_flags = SA_RESTART;
+  if(sigaction(SIGPIPE, &sa_sigpipe, NULL) == -1)
+  {
+    perror("SIGPIPE");
+    exit(-1);
+  }
+  
   pthread_t id_hilo;
   if(pthread_create(&id_hilo, NULL, escribir_respuesta, NULL) != 0){
-    printf("Algo ha salido mal creando el hilo de escucha\n");
+    perror("THREAD");
+    exit(-1);
   }
+  
+  if(argc != 2)
+  {
+    perror("Malos Argumentos");
+    exit(-1);
+  }
+  descriptor_cliente = atoi(argv[1]);
+  iniciar_shell();
+  terminar_shell();
+  return 0;
+}
+
+void iniciar_shell()
+{
+  cliente_conectado = 1;
 
   int tam_comm;
   char * comando;
@@ -51,7 +83,7 @@ void * escribir_respuesta(void* args)
   while(cliente_conectado)
   {
     if(leer_socket(descriptor_cliente, respuesta, MAX_LINE) == 0){
-      terminar_shell();
+      break;
     }else {
       printf("%s",respuesta);
     }
@@ -62,4 +94,25 @@ void * escribir_respuesta(void* args)
 void terminar_shell(void)
 {
   cliente_conectado = 0;
+  close(descriptor_cliente);
+  exit(0);
+}
+
+void sig_handler(int signal)
+{
+  switch(signal)
+  {
+    case SIGINT:
+      //Se precionó Ctrl-C
+      printf(" Apagando el servidor...\n");
+      terminar_shell();
+      //exit(0);
+      break;
+    case SIGPIPE:
+      printf("[x] Se ha perdido la conexión con el cliente\n\n");
+      terminar_shell();
+      break;
+    default: break;
+  }
+  return;
 }

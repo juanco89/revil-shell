@@ -7,8 +7,8 @@
 #include <signal.h>
 #include <netdb.h>
 #include <ctype.h>
-
-#include "shell.h"
+#include <stdlib.h>
+#include <string.h>
 
 /*Declaracion de variables globales*/
 int socket_des;
