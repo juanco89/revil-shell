@@ -1,27 +1,10 @@
 #include "../include/cmd_exec.h"
 
-void tokenizador(char* cmd)
-{
-  char copy[MAX_LINE];
-  strncpy(copy, cmd, strlen(cmd) + 1);
-  char *t;
-  int i = 0;
-  t = strtok(copy, DELIM);
-  while(t != NULL && i < MAX_TOKENS - 1)
-  {
-    tokens[i] = t;
-    i++;
-    t = strtok(NULL, DELIM);
-  }
-  tokens[i]= (char *)NULL;
-}
-
 void exec_cmd(char* cmd)
 {
   int p[2];
   pipe(p);
 
-  printf("%s\n", cmd);
   int bg = es_background(cmd);
 
   pid_t pid_cmd;
@@ -32,9 +15,23 @@ void exec_cmd(char* cmd)
       perror("Ha fallado la creación del nuevo proceso\n");
       break;
     case 0:
+    {
       //Tokenizar el comando recibido para pasarlo como array a execvp
-      tokenizador(cmd);
+      char copy[MAX_LINE];
+      strncpy(copy, cmd, strlen(cmd) + 1);
+      char *t;
+      int i = 0;
+      t = strtok(copy, DELIM);
+      while(t != NULL && i < MAX_TOKENS - 1)
+      {
+	tokens[i] = t;
+	i++;
+	t = strtok(NULL, DELIM);
+      }
+      tokens[i]= (char *)NULL;
 
+      for(i=0;tokens[i]!=NULL;i++)printf("%s\n", tokens[i]);
+      
       close(1); //stdout: 1
       dup(p[1]); // Se duplica el extremo de escritura de la pipe en stdout.
       close(p[0]); // Cerrar el extremo de lectura (el hijo no lo usará)
@@ -42,6 +39,7 @@ void exec_cmd(char* cmd)
       execvp(tokens[0], tokens);
       perror("Exec");
       exit(-1);
+    }
       break;
     default:
       close(p[1]); //Cerrar pipe de escritura.
@@ -74,5 +72,11 @@ void * enviar_respuesta(void* param)
 
 int es_background(char* cmd)
 {
+  int l = strlen(cmd);
+  if(cmd[l-1]=='&')
+  {
+    cmd[l -1] = '\0';
+    return 1;
+  }
   return 0;
 }
