@@ -1,10 +1,17 @@
 #include "../include/cmd_exec.h"
 
+/**
+ * Se encarga de la ejecución del comando recibido. Tokeniza el comando para crear
+ * un array con los parámetros y así pasarlo a execvp.
+ * Se encarga de hacer el fork y redireccionar la respuesta hacia el servidor.
+ */ 
 void exec_cmd(char* cmd)
 {
+  //Pipe para redirigir la salida del comando ajecutado hacia el servidor.
   int p[2];
   pipe(p);
 
+  // 1 si debe ejecutarse en background, 0 de lo contario.
   int bg = es_background(cmd);
 
   pid_t pid_cmd;
@@ -16,22 +23,23 @@ void exec_cmd(char* cmd)
       break;
     case 0:
     {
-      //Tokenizar el comando recibido para pasarlo como array a execvp
-      char copy[MAX_LINE];
-      strncpy(copy, cmd, strlen(cmd) + 1);
+      //Tokenizar el comando recibido para pasarlo como array a execvp      
       char *t;
       int i = 0;
-      t = strtok(copy, DELIM);
-      while(t != NULL && i < MAX_TOKENS - 1)
+      //Retorna un apuntador al primer token de cmd delimitado por DELIM (" ")
+      t = strtok(cmd, DELIM);
+      while(t != NULL && i < MAX_TOKENS - 1) // Se guarda 1 posicion para (char*)NULL
       {
 	tokens[i] = t;
 	i++;
+	// Los siguientes tokens se retornan indicando NULL
 	t = strtok(NULL, DELIM);
       }
+      // Es necesario que la última posición del array de parámetros sea NULL.
       tokens[i]= (char *)NULL;
 
-      for(i=0;tokens[i]!=NULL;i++)printf("%s\n", tokens[i]);
-      
+      //Para capturar la salida y enviarla al servidor.
+      //Se usa un pipe, y se establecerá el descriptor de escritura de este como la salida estándar.
       close(1); //stdout: 1
       dup(p[1]); // Se duplica el extremo de escritura de la pipe en stdout.
       close(p[0]); // Cerrar el extremo de lectura (el hijo no lo usará)
@@ -55,6 +63,11 @@ void exec_cmd(char* cmd)
   }
 }
 
+/**
+ * Este método se ejecuta en un hilo y es el encargado de enviar la respuesta
+ * de la ejecución de un comando hacia el servidor. La respuesta es leida de
+ * una pipe, al llamarlo es pasado su descriptor de lectura.
+ */
 void * enviar_respuesta(void* param)
 {
   int p_write = (int) ((int*)param)[0];
@@ -70,12 +83,15 @@ void * enviar_respuesta(void* param)
   pthread_exit((void *) NULL);
 }
 
+/**
+ * Indica si el comando debe ejecutarse en background
+ */
 int es_background(char* cmd)
 {
   int l = strlen(cmd);
   if(cmd[l-1]=='&')
   {
-    cmd[l -1] = '\0';
+    cmd[l-1] = '\0';
     return 1;
   }
   return 0;
