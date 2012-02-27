@@ -14,7 +14,10 @@
 
 #define PROMPT "~~> "
 
+/* Descriptor del cliente conectado. */
 int descriptor_cliente;
+/** Indica si un cliente está conectado.
+ Se usa para controlar el ciclo del while y del hilo de escucha.*/
 int cliente_conectado;
 
 void iniciar_shell();

@@ -11,7 +11,6 @@
 #include <wait.h>
 #include <ctype.h>
 
-#include "iosocket.h"
 #include "cmd_exec.h"
 
 /*Declaracion de variables globales*/

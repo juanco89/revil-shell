@@ -3,8 +3,9 @@
 # Archivo: Makefile
 #
 # Para compilar todo el proyecto, hágalo con la orden make.
-# Para compilar solo el servidor: make servidor
+# Para compilar 'solo' el servidor: make servidor
 # Para compilar solo el cliente: make cliente
+# Para compilar solo la shell: make shell
 # Para limpiar: make clean
 # Para limpiar todo (con ejecutables): make clean_all
 ####

@@ -3,7 +3,8 @@
 
 #include <sys/socket.h>
 
-#define MAX_LINE 100
+// Máxima longitud que será transmitida a través de un socket.
+#define MAX_LINE 200
 
 int escribir_socket(int sckdes, char* msg, int leng);
 

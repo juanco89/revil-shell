@@ -70,21 +70,25 @@ void exec_cmd(char* cmd)
  */
 void * enviar_respuesta(void* param)
 {
+  //Se obtiene el parámetro, este es el descriptor del extremo de lectura de la pipe
   int p_write = (int) ((int*)param)[0];
-  FILE *f = fdopen(p_write, "r");
+  //Buffer para recibir la respuesta
   char buffer[MAX_LINE];
   int leido;
-  while((leido=fread(buffer, 1, MAX_LINE, f)) != 0) {
-    printf("%s\n",buffer);
+  // Se lee desde el descriptor no mas de MAX_LINE y se almacena
+  //en buffer, si se retorna 0 es porque se llegó al final del archivo
+  //o porque se ha cerrado la conexión con el servidor.
+  while((leido=read(p_write, buffer, MAX_LINE)) != 0) {
     escribir_socket(sckdes, buffer, leido);
   }
-  fclose(f);
+  //Se cierra el descriptor de la pipe
   close(p_write);
+  //Se Termina el hilo, no se retorna nada
   pthread_exit((void *) NULL);
 }
 
 /**
- * Indica si el comando debe ejecutarse en background
+ * Indica si el comando debe ejecutarse en background.
  */
 int es_background(char* cmd)
 {

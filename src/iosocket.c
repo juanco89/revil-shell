@@ -7,8 +7,7 @@
  */
 int escribir_socket(int sckdes, char* msg, int leng)
 {
-  int result = send(sckdes, msg, leng,0);
-  return result;
+  return send(sckdes, msg, leng,0);
 }
 
 /**
@@ -18,6 +17,5 @@ int escribir_socket(int sckdes, char* msg, int leng)
  */
 int leer_socket(int sckdes, char* msg, int leng)
 {
-   int msg_len= recv(sckdes,msg,leng,0);
-   return msg_len;
+   return recv(sckdes,msg,leng,0);   
 }
